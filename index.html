@@ -3465,6 +3465,110 @@
                                     </head><body></body></html>" data-savepage-sameorigin="" name="submission_handler_2a3ec620-423c-4c66-a681-05fc9c530e11-2e887efe-a938-482d-8a5b-134fc20ab608" style="display:none" title="submission frame" data-savepage-key="0-7"></iframe>
                                                             <div data-hsfc-id="LiveRegionContent" aria-live="polite" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2e887efe-a938-482d-8a5b-134fc20ab608-live-region-content" class="hsfc-LiveRegionContent"></div>
                                                         </form>
+
+                                                        <script defer>
+  function sendClickwrapFormData() {
+    const iframe = document.getElementById("my-iframe");
+    if (!iframe?.contentWindow) return;
+
+    // read fresh values at send time
+    const companyName = document.getElementById("companyName")?.value.trim() || "";
+    const fullName    = document.getElementById("fullName")?.value.trim() || "";
+    const email       = document.getElementById("email")?.value.trim() || "";
+
+    iframe.contentWindow.postMessage({
+      type: "set_data",
+      data: {
+        formValues: {
+          counterpartyName: companyName,
+          counterpartySignerName: fullName,
+          counterpartySignerEmail: email,
+          description
+        },
+        styles: {
+          checkbox: {
+            uncheckedBorderColor: "#007490",
+            uncheckedBackgroundColor: "#F8F8F7",
+            checkedBackgroundColor: "#00A66F",
+            checkmarkColor: "lavender",
+          },
+          acceptanceLanguageText: {
+            fontSize: "16px",
+            color: "black",
+            fontWeight: "500",
+            fontFamily: { type: "google", fontFamilyName: "Borel" },
+            fontStyle: "normal",
+          },
+          documentLink: {
+            color: "blue",
+            fontWeight: "600",
+            fontFamily: { type: "google", fontFamilyName: "Borel" },
+            fontStyle: "normal",
+            fontSize: "16px"
+          }
+        }
+      },
+      workflowTemplateId: WORKFLOW_TEMPLATE_ID,
+    }, IFRAME_HOST_URL);
+  }
+
+  function sendClickwrapAcceptance() {
+    const iframe = document.getElementById("my-iframe");
+    if (!iframe?.contentWindow) return;
+
+    iframe.contentWindow.postMessage({
+      type: "send_acceptance",
+      workflowTemplateId: WORKFLOW_TEMPLATE_ID
+    }, IFRAME_HOST_URL);
+  }
+
+  function checkFormAndRenderIframe() {
+    const companyName = document.getElementById("companyName")?.value.trim() || "";
+    const fullName    = document.getElementById("fullName")?.value.trim() || "";
+    const email       = document.getElementById("email")?.value.trim() || "";
+
+    const allFilled = companyName && fullName && email && description;
+
+    // cache (optional)
+    window.formData = { companyName, fullName, email, description };
+
+    const btn = document.getElementById("final-submit-button");
+    if (btn) btn.disabled = !(allFilled && CLICKWRAP_ACCEPTED);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // listen to BOTH input and change (selects fire change)
+    ['companyName', 'fullName', 'email', 'description'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input',  checkFormAndRenderIframe);
+        el.addEventListener('change', checkFormAndRenderIframe);
+      }
+    });
+
+    // set initial button state
+    checkFormAndRenderIframe();
+
+    // handle the form submit (click or Enter)
+    const form = document.getElementById('signUpForm');
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        if (!CLICKWRAP_ACCEPTED) {
+          alert('Please review and accept the terms to continue.');
+          return;
+        }
+
+        // send data, then acceptance, then redirect
+        sendClickwrapFormData();
+        sendClickwrapAcceptance();
+        window.location.href = REDIRECT_URL;
+      });
+    }
+  });
+</script>
+
                                                     </div>
                                                 </div>
                                                 <!--/$-->
