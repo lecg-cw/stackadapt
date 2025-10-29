@@ -3526,6 +3526,7 @@ documentLink: {
     const fullName    = document.getElementById("fullName")?.value?.trim() || "";
     const email       = document.getElementById("email")?.value?.trim() || "";
 
+    // FIX: add comma after data, and put workflowTemplateId inside the same object
     sendIframeMessage({
       type: "set_data",
       data: {
@@ -3553,10 +3554,11 @@ documentLink: {
     const email       = document.getElementById("email")?.value?.trim() || "";
     const allFilled   = !!(companyName && fullName && email);
 
-    // Support either your generated button id or #final-submit-button
-    const btn = document.querySelector(
-      "#final-submit-button, #2a3ec620-423c-4c66-a681-05fc9c530e11-15"
-    );
+    // FIX: avoid invalid CSS selector by using getElementById fallbacks
+    const btn =
+      document.getElementById("final-submit-button") ||
+      document.getElementById("2a3ec620-423c-4c66-a681-05fc9c530e11-15");
+
     if (btn) btn.disabled = !(allFilled && CLICKWRAP_ACCEPTED);
   }
 
@@ -3567,7 +3569,6 @@ documentLink: {
       if (!iframe) return;
       try {
         const url = new URL(iframe.src);
-        // If someone left "&&parent=..." in markup, URLSearchParams handles it.
         url.searchParams.set("parent", window.location.origin);
         iframe.src = url.toString();
       } catch (e) {
@@ -3587,9 +3588,11 @@ documentLink: {
 
     // --- 3) Wire up submit via form OR via button click fallback ---
     const form = document.getElementById("signUpForm");
-    const button = document.querySelector(
-      "#final-submit-button, #2a3ec620-423c-4c66-a681-05fc9c530e11-15"
-    );
+
+    // FIX: replace querySelector with stable ID fallbacks
+    const button =
+      document.getElementById("final-submit-button") ||
+      document.getElementById("2a3ec620-423c-4c66-a681-05fc9c530e11-15");
 
     function handleSubmit(e) {
       if (e) e.preventDefault();
@@ -3608,11 +3611,11 @@ documentLink: {
       form.addEventListener("submit", handleSubmit);
     }
     if (button) {
-      // Fallback if no form submit is triggered (e.g., plain button)
       button.addEventListener("click", handleSubmit);
     }
   });
 </script>
+
 
                                                     </div>
                                                 </div>
