@@ -93,6 +93,88 @@
     <style id="wp-block-post-content-inline-css">
         .wp-block-post-content{display:flow-root}
 </style>
+
+<script defer>
+  const IFRAME_HOST_URL = "https://demo.ironcladapp.com";
+  const WORKFLOW_TEMPLATE_ID = "690286e84f2937f6b85fc74f";
+  const REDIRECT_URL = "https://www.stackadapt.com";
+
+  // shared state for both scripts
+  var CLICKWRAP_ACCEPTED = false;
+  let formData = {};
+
+  function handleIframeMessage(event) {
+    if (event.origin !== IFRAME_HOST_URL) return;
+
+    const iframeInPage = document.getElementById('my-iframe');
+    if (!iframeInPage?.contentWindow) return;
+
+    const msgType = event?.data?.type;
+
+    switch (msgType) {
+      case "clickwrap_initialized":
+        // Seed defaults (no values yet), correct payload shape:
+        iframeInPage.contentWindow.postMessage({
+          type: "set_data",
+          data: {
+            formValues: {}, // use WFD defaults
+            styles: {
+              checkbox: {
+                uncheckedBorderColor: "#007490",
+                uncheckedBackgroundColor: "#F8F8F7",
+                checkedBackgroundColor: "#00A66F",
+                checkmarkColor: "lavender",
+              },
+              acceptanceLanguageText: {
+                fontSize: "16px",
+                color: "black",
+                fontWeight: "500",
+                fontFamily: { type: "google", fontFamilyName: "Borel" },
+                fontStyle: "normal",
+              },
+              documentLink: {
+                color: "blue",
+                fontWeight: "600",
+                fontFamily: { type: "google", fontFamilyName: "Borel" },
+                fontStyle: "normal",
+                fontSize: "16px"
+              },
+            }
+          },
+          // ⬇️ top-level, not inside `data`
+          workflowTemplateId: WORKFLOW_TEMPLATE_ID,
+        }, IFRAME_HOST_URL);
+        break;
+
+      case "clickwrap_is_loading":
+      case "clickwrap_load_succeeded":
+      case "clickwrap_load_failed":
+        // optional logging
+        break;
+
+      case "clickwrap_checkbox_checked":
+        CLICKWRAP_ACCEPTED = true;
+        if (typeof window.checkFormAndRenderIframe === "function") {
+          window.checkFormAndRenderIframe();
+        }
+        break;
+
+      case "clickwrap_checkbox_unchecked":
+        CLICKWRAP_ACCEPTED = false;
+        if (typeof window.checkFormAndRenderIframe === "function") {
+          window.checkFormAndRenderIframe();
+        }
+        break;
+
+      default:
+        // no-op
+        break;
+    }
+  }
+
+  window.addEventListener("message", handleIframeMessage);
+</script>
+
     <style id="wp-block-navigation-link-inline-css">
         .wp-block-navigation .wp-block-navigation-item__label{overflow-wrap:break-word}.wp-block-navigation .wp-block-navigation-item__description{display:none}.link-ui-tools{border-top:1px solid #f0f0f0;padding:8px}.link-ui-block-inserter{padding-top:8px}.link-ui-block-inserter__back{margin-left:8px;text-transform:uppercase}
 </style>
@@ -2737,7 +2819,7 @@
                                                                     </div>
                                                                     <div data-hsfc-id="Row" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2579176949244" class="hsfc-Row">
                                                                         <div data-hsfc-id="TextField" class="hsfc-TextField" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2670635846219"><label data-hsfc-id="FieldLabel" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2670635846219-label" for="2a3ec620-423c-4c66-a681-05fc9c530e11-2670635846219-input" lang="EN" class="hsfc-FieldLabel"><span><span>Company Name</span><span class="hsfc-FieldLabel__RequiredIndicator">*</span></span></label><input data-hsfc-id="TextInput" type="text" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2670635846219-input" name="0-1/company" placeholder="" required="" aria-invalid="false" aria-required="true" aria-labelledby="2a3ec620-423c-4c66-a681-05fc9c530e11-2670635846219-label" autocomplete="organization" class="hsfc-TextInput" value=""></div>
-                                                                        <div data-hsfc-id="TextField" class="hsfc-TextField" id="2a3ec620-423c-4c66-a681-05fc9c530e11-3272554336391"><label data-hsfc-id="FieldLabel" id="2a3ec620-423c-4c66-a681-05fc9c530e11-3272554336391-label" for="2a3ec620-423c-4c66-a681-05fc9c530e11-3272554336391-input" lang="EN" class="hsfc-FieldLabel"><span><span>Job Title</span><span class="hsfc-FieldLabel__RequiredIndicator">*</span></span></label><input data-hsfc-id="TextInput" type="text" id="2a3ec620-423c-4c66-a681-05fc9c530e11-3272554336391-input" name="0-1/jobtitle" placeholder="" required="" aria-invalid="false" aria-required="true" aria-labelledby="2a3ec620-423c-4c66-a681-05fc9c530e11-3272554336391-label" autocomplete="organization-title" class="hsfc-TextInput" value=""></div>
+                                                                        <div data-hsfc-id="TextField" class="hsfc-TextField" id="2a3ec620-423c-4c66-a681-05fc9c530e11-3272554336391"><label data-hsfc-id="FieldLabel" id="2a3ec620-423c-4c66-a681-05fc9c530e11-3272554336391-label" for="2a3ec620-423c-4c66-a681-05fc9c530e11-3272554336391-input" lang="EN" class="hsfc-FieldLabel"><span><span>Job Title</span><span class="hsfc-FieldLabel__RequiredIndicator">*</span></span></label><input data-hsfc-id="TextInput" type="text" id="2a3ec620-423c-4c66-a681-05fc9c530e11-3272554336391-input" name="0-1/jobtitle" placeholder="" required="" aria-invalid="false" aria-required="true" aria-labelledby="2a3ec620-423c-4c66-a681-05fc9c530e11-3272554336391-label" autocomplete="organization-title" class="hsfc-TextInput" value="Legal Engineer"></div>
                                                                     </div>
                                                                     <div data-hsfc-id="Row" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2036711665620" class="hsfc-Row">
                                                                         <div data-hsfc-id="DropdownField" class="hsfc-DropdownField" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2592279838347"><label data-hsfc-id="FieldLabel" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2592279838347-label" for="2a3ec620-423c-4c66-a681-05fc9c530e11-2592279838347-input" lang="EN" class="hsfc-FieldLabel"><span><span>Company Type</span><span class="hsfc-FieldLabel__RequiredIndicator">*</span></span></label>
@@ -3134,8 +3216,10 @@
                                                                         <div data-hsfc-id="CheckboxField" class="hsfc-CheckboxField" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2823036824818"><label data-hsfc-id="FieldLabel" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2823036824818-label" for="2a3ec620-423c-4c66-a681-05fc9c530e11-2823036824818-input" lang="EN" class="hsfc-FieldLabel"><input type="checkbox" data-hsfc-id="CheckboxInput" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2823036824818-input" name="0-1/marketing_form_opt_in" aria-invalid="false" aria-required="true" aria-labelledby="2a3ec620-423c-4c66-a681-05fc9c530e11-2823036824818-label" class="hsfc-CheckboxInput" value="false"><span><span>I agree to receiving communications about StackAdapt products and services. I understand that the information I provided will be used in accordance with the <a href="https://www.stackadapt.com/legal-document-centre/website-and-platform-user-privacy-policy" target="_blank" rel="noopener">Website Privacy Policy</a>, and that I may opt out at any time.</span><span class="hsfc-FieldLabel__RequiredIndicator">*</span></span></label></div>
                                                                     </div>
                                                                     <!-- iframe for ironclad -->
-                                                                    <div data-hsfc-id="Row" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2206011254522" class="hsfc-Row">
-                                                                        <div data-hsfc-id="CheckboxField" class="hsfc-CheckboxField" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2823036824818"><label data-hsfc-id="FieldLabel" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2823036824818-label" for="2a3ec620-423c-4c66-a681-05fc9c530e11-2823036824818-input" lang="EN" class="hsfc-FieldLabel"><input type="checkbox" data-hsfc-id="CheckboxInput" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2823036824818-input" name="0-1/marketing_form_opt_in" aria-invalid="false" aria-required="true" aria-labelledby="2a3ec620-423c-4c66-a681-05fc9c530e11-2823036824818-label" class="hsfc-CheckboxInput" value="false"><span><span>I agree to receiving communications about StackAdapt products and services. I understand that the information I provided will be used in accordance with the <a href="https://www.stackadapt.com/legal-document-centre/website-and-platform-user-privacy-policy" target="_blank" rel="noopener">Website Privacy Policy</a>, and that I may opt out at any time.</span><span class="hsfc-FieldLabel__RequiredIndicator">*</span></span></label></div>
+                                                                    <div>
+
+                                                                    	<iframe id="my-iframe" style="border: none; height: 50px; width: 100%;" src="https://demo.ironcladapp.com/clickwrap/690286e84f2937f6b85fc74f?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmFtZUFuY2VzdG9ycyI6WyJodHRwczovL2xlY2ctY3cuZ2l0aHViLmlvIl0sImlhdCI6MTc2MTc3Mzc0MH0.rgx0eYC_ys2baeM2_MbzsoM_QGr4mC81szU5BmHT818&parent=https://lecg-cw.github.io" style="" style=" border: none; width: 100%; height: 50px;"> </iframe>
+                                                                       
                                                                     </div>
                                                                     <div data-hsfc-id="Row" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2740310396949" class="hsfc-Row">
                                                                         <div data-hsfc-id="ReCaptchaV2" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2023126731303" class="hsfc-ReCaptchaV2">
