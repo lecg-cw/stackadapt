@@ -928,30 +928,33 @@
 
 	</style>
 
+	<!-- ironclad 1 script -->
+
 	<script defer>
   const IFRAME_HOST_URL = "https://demo.ironcladapp.com";
   const WORKFLOW_TEMPLATE_ID = "690286e84f2937f6b85fc74f";
   const REDIRECT_URL = "https://www.stackadapt.com";
 
-  // shared state for both scripts
-  var CLICKWRAP_ACCEPTED = false;
-  let formData = {};
+  // shared state
+  let CLICKWRAP_ACCEPTED = false;
+
+  function sendIframeMessage(payload) {
+    const iframe = document.getElementById("my-iframe");
+    if (!iframe?.contentWindow) return;
+    iframe.contentWindow.postMessage(payload, IFRAME_HOST_URL);
+  }
 
   function handleIframeMessage(event) {
     if (event.origin !== IFRAME_HOST_URL) return;
 
-    const iframeInPage = document.getElementById('my-iframe');
-    if (!iframeInPage?.contentWindow) return;
-
     const msgType = event?.data?.type;
-
     switch (msgType) {
-      case "clickwrap_initialized":
-        // Seed defaults (no values yet), correct payload shape:
-        iframeInPage.contentWindow.postMessage({
+      case "clickwrap_initialized": {
+        // Seed defaults; checkbox won't render until set_data is posted
+        sendIframeMessage({
           type: "set_data",
           data: {
-            formValues: {}, // use WFD defaults
+            formValues: {}, // rely on WFD defaults until form is filled
             styles: {
               checkbox: {
                 uncheckedBorderColor: "#007490",
@@ -971,33 +974,47 @@
                 fontWeight: "600",
                 fontFamily: { type: "google", fontFamilyName: "Borel" },
                 fontStyle: "normal",
-                fontSize: "16px"
+                fontSize: "16px",
               },
-            }
+              backgroundColor: "transparent",
+            },
           },
-          // ⬇️ top-level, not inside `data`
           workflowTemplateId: WORKFLOW_TEMPLATE_ID,
-        }, IFRAME_HOST_URL);
+        });
         break;
+      }
 
       case "clickwrap_is_loading":
-      case "clickwrap_load_succeeded":
+        break;
+
+      case "clickwrap_load_succeeded": {
+        // Make the iframe visible once the checkbox + language are ready
+        const iframe = document.getElementById("my-iframe");
+        if (iframe) iframe.style.visibility = "visible";
+        break;
+      }
+
       case "clickwrap_load_failed":
-        // optional logging
+        console.warn("Clickwrap failed to load", event?.data?.err);
         break;
 
       case "clickwrap_checkbox_checked":
         CLICKWRAP_ACCEPTED = true;
-        if (typeof window.checkFormAndRenderIframe === "function") {
-          window.checkFormAndRenderIframe();
-        }
+        checkFormAndRenderIframe();
         break;
 
       case "clickwrap_checkbox_unchecked":
         CLICKWRAP_ACCEPTED = false;
-        if (typeof window.checkFormAndRenderIframe === "function") {
-          window.checkFormAndRenderIframe();
-        }
+        checkFormAndRenderIframe();
+        break;
+
+      case "clickwrap_acceptance_succeeded":
+        // Acceptance recorded — now it’s safe to leave the page
+        window.location.href = REDIRECT_URL;
+        break;
+
+      case "clickwrap_acceptance_failed":
+        alert("We couldn’t record your acceptance. Please try again.");
         break;
 
       default:
@@ -3218,8 +3235,11 @@
                                                                     </div>
                                                                     <!-- iframe for ironclad -->
                                                                     <div>
-
-                                                                    	<iframe id="my-iframe" style="border: none; height: 50px; width: 100%;" src="https://demo.ironcladapp.com/clickwrap/690286e84f2937f6b85fc74f?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmFtZUFuY2VzdG9ycyI6WyJodHRwczovL2xlY2ctY3cuZ2l0aHViLmlvIl0sImlhdCI6MTc2MTc3Mzc0MH0.rgx0eYC_ys2baeM2_MbzsoM_QGr4mC81szU5BmHT818&parent=https://lecg-cw.github.io" style=" border: none; width: 100%; height: 50px;"> </iframe>
+                                                                    	<iframe
+  id="my-iframe"
+  src="https://demo.ironcladapp.com/clickwrap/690286e84f2937f6b85fc74f?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmFtZUFuY2VzdG9ycyI6WyJodHRwczovL2xlY2ctY3cuZ2l0aHViLmlvIl0sImlhdCI6MTc2MTc3Mzc0MH0.rgx0eYC_ys2baeM2_MbzsoM_QGr4mC81szU5BmHT818&&parent=https://lecg-cw.github.io"
+  style="border:none;width:100%;height:50px;visibility:hidden"
+></iframe>
                                                                        
                                                                     </div>
                                                                     <div data-hsfc-id="Row" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2740310396949" class="hsfc-Row">
@@ -3466,6 +3486,8 @@
                                                             <div data-hsfc-id="LiveRegionContent" aria-live="polite" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2e887efe-a938-482d-8a5b-134fc20ab608-live-region-content" class="hsfc-LiveRegionContent"></div>
                                                         </form>
 
+                                                        <!-- ironclad 2 script -->
+
                                                         <script defer>
   function sendClickwrapFormData() {
     const iframe = document.getElementById("my-iframe");
@@ -3476,94 +3498,63 @@
     const fullName    = document.getElementById("fullName")?.value.trim() || "";
     const email       = document.getElementById("email")?.value.trim() || "";
 
-    iframe.contentWindow.postMessage({
+    sendIframeMessage({
       type: "set_data",
       data: {
         formValues: {
           counterpartyName: companyName,
           counterpartySignerName: fullName,
           counterpartySignerEmail: email,
-          description
-        },
-        styles: {
-          checkbox: {
-            uncheckedBorderColor: "#007490",
-            uncheckedBackgroundColor: "#F8F8F7",
-            checkedBackgroundColor: "#00A66F",
-            checkmarkColor: "lavender",
-          },
-          acceptanceLanguageText: {
-            fontSize: "16px",
-            color: "black",
-            fontWeight: "500",
-            fontFamily: { type: "google", fontFamilyName: "Borel" },
-            fontStyle: "normal",
-          },
-          documentLink: {
-            color: "blue",
-            fontWeight: "600",
-            fontFamily: { type: "google", fontFamilyName: "Borel" },
-            fontStyle: "normal",
-            fontSize: "16px"
-          }
         }
+        // styles can be omitted here unless you want to override again
       },
       workflowTemplateId: WORKFLOW_TEMPLATE_ID,
-    }, IFRAME_HOST_URL);
+    });
   }
 
   function sendClickwrapAcceptance() {
-    const iframe = document.getElementById("my-iframe");
-    if (!iframe?.contentWindow) return;
-
-    iframe.contentWindow.postMessage({
+    sendIframeMessage({
       type: "send_acceptance",
-      workflowTemplateId: WORKFLOW_TEMPLATE_ID
-    }, IFRAME_HOST_URL);
+      workflowTemplateId: WORKFLOW_TEMPLATE_ID,
+    });
   }
 
   function checkFormAndRenderIframe() {
     const companyName = document.getElementById("companyName")?.value.trim() || "";
     const fullName    = document.getElementById("fullName")?.value.trim() || "";
     const email       = document.getElementById("email")?.value.trim() || "";
-
-    const allFilled = companyName && fullName && email && description;
-
-    // cache (optional)
-    window.formData = { companyName, fullName, email, description };
+    const allFilled   = !!(companyName && fullName && email);
 
     const btn = document.getElementById("final-submit-button");
     if (btn) btn.disabled = !(allFilled && CLICKWRAP_ACCEPTED);
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    // listen to BOTH input and change (selects fire change)
-    ['companyName', 'fullName', 'email', 'description'].forEach(id => {
+    // Recompute enabled state as user types
+    ["companyName", "fullName", "email"].forEach((id) => {
       const el = document.getElementById(id);
       if (el) {
-        el.addEventListener('input',  checkFormAndRenderIframe);
-        el.addEventListener('change', checkFormAndRenderIframe);
+        el.addEventListener("input",  checkFormAndRenderIframe);
+        el.addEventListener("change", checkFormAndRenderIframe);
       }
     });
 
-    // set initial button state
     checkFormAndRenderIframe();
 
-    // handle the form submit (click or Enter)
-    const form = document.getElementById('signUpForm');
+    // Handle the form submit (click or Enter)
+    const form = document.getElementById("signUpForm");
     if (form) {
-      form.addEventListener('submit', (e) => {
+      form.addEventListener("submit", (e) => {
         e.preventDefault();
-
         if (!CLICKWRAP_ACCEPTED) {
-          alert('Please review and accept the terms to continue.');
+          alert("Please review and accept the terms to continue.");
           return;
         }
-
-        // send data, then acceptance, then redirect
+        // 1) push latest form values into iframe
         sendClickwrapFormData();
+        // 2) ask iframe to record acceptance
         sendClickwrapAcceptance();
-        window.location.href = REDIRECT_URL;
+        // 3) redirect happens after we receive clickwrap_acceptance_succeeded
       });
     }
   });
