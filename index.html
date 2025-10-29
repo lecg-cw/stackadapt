@@ -1488,6 +1488,26 @@ documentLink: {
   src: /*savepage-url=https://fonts.gstatic.com/s/sourcesans3/v19/nwpStKy2OAdR1K-IwhWudF-R3wIaZejf5HdF8Q.woff2*/ url() format('woff2');
   unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
 }
+
+
+/*Ironclad styling*/
+
+#final-submit-button,
+.hsfc-NavigationRow__Buttons {
+  position: relative;
+  z-index: 3;
+}
+
+/* Keep the iframe below the button so it can't steal clicks */
+#my-iframe {
+  position: relative;
+  z-index: 1;
+}
+
+/* Safety: ensure the button can receive pointer events */
+#final-submit-button {
+  pointer-events: auto !important;
+}
 /* cyrillic */
 @font-face {
   font-family: 'Source Sans 3';
@@ -3482,7 +3502,7 @@ documentLink: {
                                                                     </div>
                                                                     <div id="2a3ec620-423c-4c66-a681-05fc9c530e11-2844516267582" data-hsfc-id="NavigationRow" class="hsfc-NavigationRow">
                                                                         <div id="2a3ec620-423c-4c66-a681-05fc9c530e11-2844516267582-a" class="hsfc-NavigationRow__Alerts"></div>
-                                                                        <div id="2a3ec620-423c-4c66-a681-05fc9c530e11-2844516267582-b" class="hsfc-NavigationRow__Buttons"><button type="submit" data-hsfc-id="Button" id="final-submit-button" lang="EN" aria-busy="false" class="hsfc-Button">Submit</button></div>
+                                                                        <div id="2a3ec620-423c-4c66-a681-05fc9c530e11-2844516267582-b" class="hsfc-NavigationRow__Buttons"><button type="button" data-hsfc-id="Button" id="final-submit-button" lang="EN" aria-busy="false" class="hsfc-Button">Submit</button></div>
                                                                     </div>
                                                                 </div>
                                                             </div><input type="hidden" name="hs_context" value="{" source":"forms-embed-static","sourceName":"forms-embed","sourceVersion":"1.0","sourceVersionMajor":"1","sourceVersionMinor":"0","referrer":"https://www.stackadapt.com/","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36","urlParams":{"sa_description_lp":"homepage_signup_btn"},"isHubSpotCmsGeneratedPage":false,"isCMSEditor":false,"locale":"en","formDefinitionUpdatedAt":1761750837638,"pageUrl":"https://www.stackadapt.com/sign-up?sa_description_lp=homepage_signup_btn","pageTitle":"Sign Up - StackAdapt","allPageIds":{},"hutk":"67640b1cab4d56d5bda617a3cbf9ed37","fieldValues":{"0-1/country_region__dropdown_":"United States","0-1/utm_source":"","0-1/utm_medium":"","0-1/utm_campaign":"","0-1/utm_content":"","0-1/utm_term":"","0-1/most_recent_utm_lp__c":"homepage_signup_btn","0-1/gclid__c":"","0-1/marketing_form_opt_in":false},"emailResubscribeStatus":"NOT_APPLICABLE","captchaStatus":"LOADED","renderedFieldsIds":["0-1/firstname","0-1/lastname","0-1/email","0-1/phone","0-1/company","0-1/jobtitle","0-1/company_type__c","0-1/company_size__c","0-1/country_region__dropdown_","0-1/us_state_region_dropdown","0-1/annual_programmatic_budget__c","0-1/how_are_you_looking_to_work_with_us","0-1/utm_source","0-1/utm_medium","0-1/utm_campaign","0-1/utm_content","0-1/utm_term","0-1/most_recent_utm_lp__c","0-1/gclid__c","0-1/marketing_form_opt_in"],"boolCheckBoxFields":"0-1/marketing_form_opt_in","__INTERNAL_PERFORMANCE__":{"formDomInteractive":594.9,"formPageLoad":0,"formRendered":953.5,"formReady":1025.1,"formDeveloperScriptLoadingStart":538.2,"formDeveloperScriptLoadingEnd":593.6,"formSsrRequestLoadingStart":594.3,"formSsrRequestLoadingEnd":931.1,"formIslandRuntimeLoadingStart":951.7,"formIslandRuntimeLoadingEnd":951.7,"formReactCombinedLoadingStart":932.1,"formReactCombinedLoadingEnd":932.1,"formServerRendererLoadingStart":953.5,"formServerRendererLoadingEnd":1014.7,"effectiveNetworkType":"4g","inferredFormType":"developer"}}"> <iframe srcdoc="<html><head>
