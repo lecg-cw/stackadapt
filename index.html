@@ -930,7 +930,7 @@
 
 	<!-- ironclad 1 script -->
 
-	<script defer>
+<script defer>
   const IFRAME_HOST_URL = "https://demo.ironcladapp.com";
   const WORKFLOW_TEMPLATE_ID = "690286e84f2937f6b85fc74f";
   const REDIRECT_URL = "https://www.stackadapt.com";
@@ -3235,13 +3235,14 @@
                                                                     </div>
                                                                     <!-- iframe for ironclad -->
                                                                     <div>
-                                                                    	<iframe
-  id="my-iframe"
-  src="https://demo.ironcladapp.com/clickwrap/690286e84f2937f6b85fc74f?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmFtZUFuY2VzdG9ycyI6WyJodHRwczovL2xlY2ctY3cuZ2l0aHViLmlvIl0sImlhdCI6MTc2MTc3Mzc0MH0.rgx0eYC_ys2baeM2_MbzsoM_QGr4mC81szU5BmHT818&&parent=https://lecg-cw.github.io"
-  style="border:none;width:100%;height:50px;visibility:hidden"
-></iframe>
-                                                                       
-                                                                    </div>
+                                                                    	<div>
+  <iframe
+    id="my-iframe"
+    src="https://demo.ironcladapp.com/clickwrap/690286e84f2937f6b85fc74f?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmFtZUFuY2VzdG9ycyI6WyJodHRwczovL2xlY2ctY3cuZ2l0aHViLmlvIl0sImlhdCI6MTc2MTc3NTgyNX0.VrmL3gsjFK7HfyJfeeHhDSZVRRd72y22HAMo89ADIlY&parent=https://lecg-cw.github.io"
+    style="border:none;width:100%;height:50px;visibility:hidden"
+    referrerpolicy="origin"
+  ></iframe>
+</div>
                                                                     <div data-hsfc-id="Row" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2740310396949" class="hsfc-Row">
                                                                         <div data-hsfc-id="ReCaptchaV2" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2023126731303" class="hsfc-ReCaptchaV2">
                                                                             <div>
@@ -3488,15 +3489,15 @@
 
                                                         <!-- ironclad 2 script -->
 
-                                                        <script defer>
+                              <script defer>
   function sendClickwrapFormData() {
     const iframe = document.getElementById("my-iframe");
     if (!iframe?.contentWindow) return;
 
     // read fresh values at send time
-    const companyName = document.getElementById("companyName")?.value.trim() || "";
-    const fullName    = document.getElementById("fullName")?.value.trim() || "";
-    const email       = document.getElementById("email")?.value.trim() || "";
+    const companyName = document.getElementById("companyName")?.value?.trim() || "";
+    const fullName    = document.getElementById("fullName")?.value?.trim() || "";
+    const email       = document.getElementById("email")?.value?.trim() || "";
 
     sendIframeMessage({
       type: "set_data",
@@ -3520,17 +3521,34 @@
   }
 
   function checkFormAndRenderIframe() {
-    const companyName = document.getElementById("companyName")?.value.trim() || "";
-    const fullName    = document.getElementById("fullName")?.value.trim() || "";
-    const email       = document.getElementById("email")?.value.trim() || "";
+    const companyName = document.getElementById("companyName")?.value?.trim() || "";
+    const fullName    = document.getElementById("fullName")?.value?.trim() || "";
+    const email       = document.getElementById("email")?.value?.trim() || "";
     const allFilled   = !!(companyName && fullName && email);
 
-    const btn = document.getElementById("final-submit-button");
+    // Support either your generated button id or #final-submit-button
+    const btn = document.querySelector(
+      "#final-submit-button, #2a3ec620-423c-4c66-a681-05fc9c530e11-15"
+    );
     if (btn) btn.disabled = !(allFilled && CLICKWRAP_ACCEPTED);
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    // Recompute enabled state as user types
+    // --- 1) Normalize iframe src so parent= matches the real page origin ---
+    (function normalizeIframeSrc() {
+      const iframe = document.getElementById("my-iframe");
+      if (!iframe) return;
+      try {
+        const url = new URL(iframe.src);
+        // If someone left "&&parent=..." in markup, URLSearchParams handles it.
+        url.searchParams.set("parent", window.location.origin);
+        iframe.src = url.toString();
+      } catch (e) {
+        console.warn("Could not normalize iframe src:", e);
+      }
+    })();
+
+    // --- 2) Recompute enabled state as user types/changes ---
     ["companyName", "fullName", "email"].forEach((id) => {
       const el = document.getElementById(id);
       if (el) {
@@ -3538,24 +3556,33 @@
         el.addEventListener("change", checkFormAndRenderIframe);
       }
     });
-
     checkFormAndRenderIframe();
 
-    // Handle the form submit (click or Enter)
+    // --- 3) Wire up submit via form OR via button click fallback ---
     const form = document.getElementById("signUpForm");
+    const button = document.querySelector(
+      "#final-submit-button, #2a3ec620-423c-4c66-a681-05fc9c530e11-15"
+    );
+
+    function handleSubmit(e) {
+      if (e) e.preventDefault();
+      if (!CLICKWRAP_ACCEPTED) {
+        alert("Please review and accept the terms to continue.");
+        return;
+      }
+      // 1) push latest form values into iframe
+      sendClickwrapFormData();
+      // 2) ask iframe to record acceptance
+      sendClickwrapAcceptance();
+      // 3) redirect happens after we receive clickwrap_acceptance_succeeded
+    }
+
     if (form) {
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        if (!CLICKWRAP_ACCEPTED) {
-          alert("Please review and accept the terms to continue.");
-          return;
-        }
-        // 1) push latest form values into iframe
-        sendClickwrapFormData();
-        // 2) ask iframe to record acceptance
-        sendClickwrapAcceptance();
-        // 3) redirect happens after we receive clickwrap_acceptance_succeeded
-      });
+      form.addEventListener("submit", handleSubmit);
+    }
+    if (button) {
+      // Fallback if no form submit is triggered (e.g., plain button)
+      button.addEventListener("click", handleSubmit);
     }
   });
 </script>
