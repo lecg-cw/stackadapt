@@ -3523,7 +3523,7 @@ documentLink: {
 
     // read fresh values at send time
     const companyName = document.getElementById("companyName")?.value?.trim() || "";
-    const fullName    = document.getElementById("fullName")?.value?.trim() || "";
+    const firstName    = document.getElementById("firstName")?.value?.trim() || "";
     const email       = document.getElementById("email")?.value?.trim() || "";
 
     // FIX: add comma after data, and put workflowTemplateId inside the same object
@@ -3532,7 +3532,7 @@ documentLink: {
       data: {
         formValues: {
           counterpartyName: companyName,
-          counterpartySignerName: fullName,
+          counterpartySignerName: firstName,
           counterpartySignerEmail: email,
         }
         // styles can be omitted here unless you want to override again
@@ -3550,9 +3550,9 @@ documentLink: {
 
   function checkFormAndRenderIframe() {
     const companyName = document.getElementById("companyName")?.value?.trim() || "";
-    const fullName    = document.getElementById("fullName")?.value?.trim() || "";
+    const firstName    = document.getElementById("firstName")?.value?.trim() || "";
     const email       = document.getElementById("email")?.value?.trim() || "";
-    const allFilled   = !!(companyName && fullName && email);
+    const allFilled   = !!(companyName && firstName && email);
 
     // FIX: avoid invalid CSS selector by using getElementById fallbacks
     const btn =
@@ -3577,7 +3577,7 @@ documentLink: {
     })();
 
     // --- 2) Recompute enabled state as user types/changes ---
-    ["companyName", "fullName", "email"].forEach((id) => {
+    ["companyName", "firstName", "email"].forEach((id) => {
       const el = document.getElementById(id);
       if (el) {
         el.addEventListener("input",  checkFormAndRenderIframe);
