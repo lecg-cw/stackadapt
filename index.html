@@ -3586,7 +3586,7 @@ documentLink: {
     })();
 
     // --- 2) Recompute enabled state as user types/changes ---
-    ["companyName", "firstName", "email, companyType, proposedWork, annualBudget"].forEach((id) => {
+    ["companyName", "firstName", "email", "companyType", "proposedWork", "annualBudget"].forEach((id) => {
       const el = document.getElementById(id);
       if (el) {
         el.addEventListener("input",  checkFormAndRenderIframe);
