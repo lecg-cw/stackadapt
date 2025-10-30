@@ -3525,9 +3525,9 @@ documentLink: {
     const companyName = document.getElementById("companyName")?.value?.trim() || "";
     const firstName    = document.getElementById("firstName")?.value?.trim() || "";
     const email       = document.getElementById("email")?.value?.trim() || "";
-    const companyType = document.getElementsBy("companyType")?.value?.trim || "";
-    const proposedWork = document.getElementsBy("proposedWork")?.value?.trim || "";
-    const annualBudget = document.getElementsBy("annualBudget")?.value?.trim || "";
+    const companyType = document.getElementsBy("companyType")?.value?.trim() || "";
+    const proposedWork = document.getElementsBy("proposedWork")?.value?.trim() || "";
+    const annualBudget = document.getElementsBy("annualBudget")?.value?.trim() || "";
 
     // FIX: add comma after data, and put workflowTemplateId inside the same object
     sendIframeMessage({
@@ -3558,9 +3558,9 @@ documentLink: {
     const companyName = document.getElementById("companyName")?.value?.trim() || "";
     const firstName    = document.getElementById("firstName")?.value?.trim() || "";
     const email       = document.getElementById("email")?.value?.trim() || "";
-    const companyType = document.getElementsBy("companyType")?.value?.trim || "";
-    const proposedWork = document.getElementsBy("proposedWork")?.value?.trim || "";
-    const annualBudget = document.getElementsBy("annualBudget")?.value?.trim || "";
+    const companyType = document.getElementsBy("companyType")?.value?.trim() || "";
+    const proposedWork = document.getElementsBy("proposedWork")?.value?.trim() || "";
+    const annualBudget = document.getElementsBy("annualBudget")?.value?.trim() || "";
     const allFilled   = !!(companyName && firstName && email && companyType && proposedWork && annualBudget);
 
     // FIX: avoid invalid CSS selector by using getElementById fallbacks
