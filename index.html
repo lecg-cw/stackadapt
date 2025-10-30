@@ -3521,13 +3521,14 @@ documentLink: {
     const iframe = document.getElementById("my-iframe");
     if (!iframe?.contentWindow) return;
 
+    const HARDCODED_COMPANY_TYPE   = "Agency";
+  const HARDCODED_PROPOSED_WORK  = "Run campaigns in StackAdapt";
+  const HARDCODED_ANNUAL_BUDGET  = "Less than $100,000";
+
     // read fresh values at send time
     const companyName = document.getElementById("companyName")?.value?.trim() || "";
     const firstName    = document.getElementById("firstName")?.value?.trim() || "";
     const email       = document.getElementById("email")?.value?.trim() || "";
-    const companyType = document.getElementsBy("companyType")?.value?.trim() || "";
-    const proposedWork = document.getElementsBy("proposedWork")?.value?.trim() || "";
-    const annualBudget = document.getElementsBy("annualBudget")?.value?.trim() || "";
 
     // FIX: add comma after data, and put workflowTemplateId inside the same object
     sendIframeMessage({
@@ -3537,9 +3538,9 @@ documentLink: {
           counterpartyName: companyName,
           counterpartySignerName: firstName,
           counterpartySignerEmail: email,
-          companyType: companyType,
-          howAreYouLookingToWorkWithUs: proposedWork,
-          annualProgrammaticBudget: annualBudget,
+          companyType: HARDCODED_COMPANY_TYPE,
+          howAreYouLookingToWorkWithUs: HARDCODED_PROPOSED_WORK,
+          annualProgrammaticBudget: HARDCODED_ANNUAL_BUDGET,
         }
         // styles can be omitted here unless you want to override again
       },
@@ -3558,10 +3559,7 @@ documentLink: {
     const companyName = document.getElementById("companyName")?.value?.trim() || "";
     const firstName    = document.getElementById("firstName")?.value?.trim() || "";
     const email       = document.getElementById("email")?.value?.trim() || "";
-    const companyType = document.getElementsBy("companyType")?.value?.trim() || "";
-    const proposedWork = document.getElementsBy("proposedWork")?.value?.trim() || "";
-    const annualBudget = document.getElementsBy("annualBudget")?.value?.trim() || "";
-    const allFilled   = !!(companyName && firstName && email && companyType && proposedWork && annualBudget);
+    const allFilled   = !!(companyName && firstName && email);
 
     // FIX: avoid invalid CSS selector by using getElementById fallbacks
     const btn =
