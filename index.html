@@ -1274,6 +1274,19 @@ documentLink: {
     .EmbeddedClickwrapApp-module_embeddedClickwrapAcceptanceLanguage_yyoink button {
         display: none;
     }
+#my-wrapper iframe {
+  position: relative;
+}
+
+#my-wrapper .hide-clickwrap-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200px;   /* size of link area */
+  height: 30px;   /* size of link area */
+  background: transparent;
+  z-index: 9999;
+}
 
     .go2083580917 {
         display: flex;
@@ -3267,12 +3280,16 @@ documentLink: {
                                                                     <!-- iframe for ironclad -->
                                                                     <div>
                                                                     	<div>
-  <iframe
+  
+  <div id="my-wrapper">
+  <div class="hide-clickwrap-link"></div>
+                                                                            <iframe
     id="my-iframe"
     src="https://demo.ironcladapp.com/clickwrap/6902f740aab707b0b8ec76fa?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmFtZUFuY2VzdG9ycyI6WyJodHRwczovL2xlY2ctY3cuZ2l0aHViLmlvIl0sImlhdCI6MTc2MTgwMjA3MX0.zbKl3MRLchMn7o_N7mD65pL1flIXBfL17ObL61VNJnY&parent=https://lecg-cw.github.io"
     style="border:none;width:100%;height:50px;visibility:hidden"
     referrerpolicy="origin"
   ></iframe>
+  </div>
 </div>
                                                                     <div data-hsfc-id="Row" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2740310396949" class="hsfc-Row">
                                                                         <div data-hsfc-id="ReCaptchaV2" id="2a3ec620-423c-4c66-a681-05fc9c530e11-2023126731303" class="hsfc-ReCaptchaV2">
