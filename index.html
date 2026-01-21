@@ -932,7 +932,7 @@
 
 <script defer>
   const IFRAME_HOST_URL = "https://demo.ironcladapp.com";
-  const WORKFLOW_TEMPLATE_ID = "6902f740aab707b0b8ec76fa";
+  const WORKFLOW_TEMPLATE_ID = "691e331656d53c72c5e92cba";
   const REDIRECT_URL = "https://www.stackadapt.com";
 
   // shared state
@@ -3285,7 +3285,7 @@ documentLink: {
   <div class="hide-clickwrap-link"></div>
                                                                             <iframe
     id="my-iframe"
-    src="https://demo.ironcladapp.com/clickwrap/6902f740aab707b0b8ec76fa?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmFtZUFuY2VzdG9ycyI6WyJodHRwczovL2xlY2ctY3cuZ2l0aHViLmlvIl0sImlhdCI6MTc2MTgwMjA3MX0.zbKl3MRLchMn7o_N7mD65pL1flIXBfL17ObL61VNJnY&parent=https://lecg-cw.github.io"
+    src="https://ironcladapp.com/clickwrap/691e331656d53c72c5e92cba?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmFtZUFuY2VzdG9ycyI6WyJodHRwczovL3d3dy5zdGFja2FkYXB0LmNvbSIsImh0dHBzOi8vdGVzdC5zdGFja2FkYXB0LmRldiIsImh0dHBzOi8vc3RhZ2luZy5zdGFja2FkYXB0LmRldiIsImh0dHA6Ly9sb2NhbGhvc3Q6MzAwMSIsImh0dHBzOi8vbWF4bnNhMi1pbnQtMjczNS1pcm9uY2xhZC50ZXN0LnN0YWNrYWRhcHQuZGV2Il0sImlhdCI6MTc2OTAyNjA4OH0.bZnmDxQSvYp33FLlJ4aB5HMkXWvKYbgkzfIc-Mqngt8          &parent=https://lecg-cw.github.io"
     style="border:none;width:100%;height:50px;visibility:hidden"
     referrerpolicy="origin"
   ></iframe>
@@ -3542,9 +3542,7 @@ documentLink: {
     const iframe = document.getElementById("my-iframe");
     if (!iframe?.contentWindow) return;
 
-    const HARDCODED_COMPANY_TYPE   = "Agency";
-  const HARDCODED_PROPOSED_WORK  = "Run campaigns in StackAdapt";
-  const HARDCODED_ANNUAL_BUDGET  = "Less than $100,000";
+    const HARDCODED_COMPANY_TYPE   = "123";
 
     // read fresh values at send time
     const companyName = document.getElementById("companyName")?.value?.trim() || "";
@@ -3559,9 +3557,7 @@ documentLink: {
           counterpartyName: companyName,
           counterpartySignerName: firstName,
           counterpartySignerEmail: email,
-          companyType: HARDCODED_COMPANY_TYPE,
-          howAreYouLookingToWorkWithUs: HARDCODED_PROPOSED_WORK,
-          annualProgrammaticBudget: HARDCODED_ANNUAL_BUDGET,
+          salesforceAccountId: HARDCODED_COMPANY_TYPE,
         }
         // styles can be omitted here unless you want to override again
       },
@@ -3605,7 +3601,7 @@ documentLink: {
     })();
 
     // --- 2) Recompute enabled state as user types/changes ---
-    ["companyName", "firstName", "email", "companyType", "proposedWork", "annualBudget"].forEach((id) => {
+    ["companyName", "firstName", "email", "salesforceAccountId"].forEach((id) => {
       const el = document.getElementById(id);
       if (el) {
         el.addEventListener("input",  checkFormAndRenderIframe);
